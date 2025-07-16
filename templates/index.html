@@ -38,10 +38,17 @@
 <body>
     <div class="container">
         <h1>YouTube Video Downloader</h1>
-        <form action="/download" method="post">
+        <form action="/download" method="post" id="downloadForm">
             <input type="text" name="url" placeholder="Enter YouTube URL" required>
-            <button type="submit">Download</button>
+            <button type="submit" id="downloadBtn">Download</button>
         </form>
+        <script>
+        document.getElementById('downloadForm').addEventListener('submit', function() {
+            var btn = document.getElementById('downloadBtn');
+            btn.disabled = true;
+            btn.textContent = 'Downloading...';
+        });
+        </script>
     </div>
 </body>
 </html>

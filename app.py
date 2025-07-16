@@ -12,13 +12,19 @@ def index():
 def download():
     url = request.form['url']
     download_path = download_youtube_video(url)
-    return send_file(download_path, as_attachment=True)
+    response = send_file(download_path, as_attachment=True)
+    @response.call_on_close
+    def cleanup():
+        try:
+            os.remove(download_path)
+        except Exception:
+            pass
+    return response
 
 def download_youtube_video(url):
-    os.makedirs('downloads', exist_ok=True)
     ydl_opts = {
-        'format': 'best',
-        'outtmpl': 'downloads/%(title)s.%(ext)s',
+        'format': 'bestvideo+bestaudio/best',
+        'outtmpl': '%(title)s.%(ext)s',
         'noplaylist': True,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -28,3 +34,5 @@ def download_youtube_video(url):
 if __name__ == '__main__':
     # Only run in debug mode when running directly
     app.run(debug=True, host='127.0.0.1', port=5000)
+
+#https://www.youtube.com/watch?v=wL8DVHuWI7Y
